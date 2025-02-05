@@ -2,6 +2,15 @@ import sqlite3
 import os
 import json
 
+def delete_symlinks(directory):
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
+        if os.path.islink(item_path):
+            os.unlink(item_path)
+            print(f"Deleted symlink: {item_path}")
+        else:
+            print(f"Not a symlink: {item_path}")
+
 # Open the JSON file
 with open('env.json', 'r') as file:
     # Load the JSON data into a Python dictionary
@@ -67,6 +76,8 @@ symlink_dir = env['symlink_dir']
 # Ensure the target directory for the symlink exists
 target_directory = os.path.dirname(symlink_dir)
 os.makedirs(target_directory, exist_ok=True)
+
+delete_symlinks(symlink_dir)
 
 for image in images:
     # Path where you want to create the symbolic link
